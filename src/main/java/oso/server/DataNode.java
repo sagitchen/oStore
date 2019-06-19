@@ -8,11 +8,11 @@ import lombok.Data;
  * @date: 2019-06-18
  */
 @Data
-public class OStoreServer {
+public class DataNode {
     private String id;
     private String dataCenterId;
     private String rackId;
     private String instanceIp;
     private int capacityInKb;
-    private int occupiedCapacityInKb;
+    private int usedInKb;
 }
