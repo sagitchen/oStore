@@ -17,12 +17,18 @@ public class StoreHandler {
 
     private static int GLOBAL_OFFSET = 0;
 
-    static {
+    private static StoreHandler STORE_HANDLER_INSTANCE = new StoreHandler();
+
+    private StoreHandler() {
         try {
             randomAccessFile = new RandomAccessFile(new File(STORE_FILE_NAME), "rw");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static StoreHandler getInstance() {
+        return STORE_HANDLER_INSTANCE;
     }
 
     public WriteResult write(byte[] content) {

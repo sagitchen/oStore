@@ -17,5 +17,6 @@ targetCompatibility = 1.8
 
 dependencies {
     compile group:"org.projectlombok", name:"lombok", version:"1.18.8"
+    compile group:"com.lmax", name:"disruptor", version:"3.4.2"
 }
 
