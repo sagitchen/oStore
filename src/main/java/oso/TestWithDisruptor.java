@@ -1,7 +1,9 @@
 package oso;
 
+import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import oso.server.*;
 
@@ -22,10 +24,11 @@ public class TestWithDisruptor {
         int bufferSize = 1024;
 
         // Construct the Disruptor
-        Disruptor<StoreEvent> disruptor = new Disruptor<>(factory, bufferSize, DaemonThreadFactory.INSTANCE);
+        Disruptor<StoreEvent> disruptor = new Disruptor<>(
+                factory, bufferSize, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, new BlockingWaitStrategy());
 
         // Connect the handler
-        disruptor.handleEventsWith(new StoreEventHandler());
+        disruptor.handleEventsWith(new StoreEventHandler()).then(new StoreClearEventHandler());
 
         // Start the Disruptor, starts all threads running
         disruptor.start();

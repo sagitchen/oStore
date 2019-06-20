@@ -12,4 +12,8 @@ public class StoreEvent {
     private EventType eventType;
 
     private StoreEventPayload payload;
+
+    public void clear() {
+        payload = null;
+    }
 }
