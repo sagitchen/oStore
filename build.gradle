@@ -2,11 +2,15 @@ buildscript {
     repositories {
         mavenCentral()
     }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.1"
+    }
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
+apply plugin: 'com.google.protobuf'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 repositories {
     mavenCentral()
@@ -18,5 +22,58 @@ targetCompatibility = 1.8
 dependencies {
     compile group:"org.projectlombok", name:"lombok", version:"1.18.8"
     compile group:"com.lmax", name:"disruptor", version:"3.4.2"
+    compile group:"io.grpc", name:"grpc-netty", version:"1.16.1"
+    compile group:"io.grpc", name:"grpc-protobuf", version:"1.16.1"
+    compile group:"io.grpc", name:"grpc-stub", version:"1.16.1"
+    compile group:"io.grpc", name:"grpc-services", version:"1.16.1"
+}
+subprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+}
+
+
+
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/proto'
+        }
+        java {
+            // include self written and generated code
+            srcDirs 'src/main/java', 'generated-sources/main/java', 'generated-sources/main/grpc'
+        }
+    }
+}
+
+mainClassName = "oso.HelloMain"
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = 'com.google.protobuf:protoc:3.0.2'
+    }
+
+    // Configure the codegen plugins
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.1.2'
+        }
+    }
+
+    generateProtoTasks.generatedFilesBaseDir = 'generated-sources'
+
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
 }
 
